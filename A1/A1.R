@@ -5,7 +5,6 @@ install.packages("MASS")
 install.packages("data.table")
 install.packages("REAT")
 
-rmarkdown::render("A1.R", "pdf_document")
 #set a working library
 setwd("~/Desktop/A1")
 
