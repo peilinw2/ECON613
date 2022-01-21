@@ -175,7 +175,8 @@ head(household_dataset, n=10) #read first 10 rows
 require(dplyr)
 require(ggplot2)
 #the shares of individuals is number of moved in one year divided by total moved, which is mean
-ggplot(household_dataset %>% group_by(year) %>% summarise(share_of_individual = mean(as.integer(dwelling_moved),na.rm = TRUE)),aes(x=year,y=share_of_individual))+geom_line()+ylab("Sharesl")
+ggplot(household_dataset %>% group_by(year) %>% 
+         summarise(share_of_individual = mean(as.integer(dwelling_moved),na.rm = TRUE)),aes(x=year,y=share_of_individual))+geom_line()+ylab("Sharesl")
 
 #3-3
 myear_exist = household_dataset %>% filter(year <= "2014") #since myear only exists before year 2015, we need to filter them.
@@ -186,13 +187,15 @@ ans_combin = as.data.frame(c(ans_exist,ans_notexist))
 set2 = cbind(household_dataset,ans_combin) #combin set of migration with household dataset
 colnames(set2)[10] = "migrated"
 head(set2, n=10) #report first 10 rows
-ggplot(set2 %>% group_by(year) %>% summarize(share_of_individual = mean(migrated,na.rm = TRUE)),aes(x=year,y=share_of_individual))+geom_line()+ylab("Shares2")
+ggplot(set2 %>% group_by(year) %>% 
+         summarize(share_of_individual = mean(migrated,na.rm = TRUE)),aes(x=year,y=share_of_individual))+geom_line()+ylab("Shares2")
 
 #3-4
 #two datasets based on 3-3 and 3-4
 data_1 = household_dataset %>% group_by(year) %>% summarise(share_of_individual = mean(as.integer(dwelling_moved),na.rm = TRUE))
 data_2 = set2 %>% group_by(year) %>% summarize(share_of_individual = mean(migrated,na.rm = TRUE))
-mixed_plot = ggplot(NULL)+geom_line(data = data_1,aes(x = year, y = share_of_individual),col = "red") + geom_line(data = data_2,aes(x = year,y = share_of_individual),col = "blue")+xlab("year")+ylab("share")
+mixed_plot = ggplot(NULL)+geom_line(data = data_1,aes(x = year, y = share_of_individual),col = "red") + 
+  geom_line(data = data_2,aes(x = year,y = share_of_individual),col = "blue")+xlab("year")+ylab("share")
 mixed_plot
 
 #3-5
@@ -202,9 +205,11 @@ colnames(individual_migrate)[13] = "year" #change the colname to remember
 vec5 = individual_migrate %>% group_by(idind) %>%
         filter(!is.na(profession),!is.na(empstat)) %>% mutate(profession_past = lag(profession, n = 1, order_by = year))%>%
         mutate(empstat_past = lag(empstat, n = 1, order_by = year)) #filter out NAs and shift the profession/empstat one year back
-vec5 = vec5 %>% group_by(idmen,year) %>%  mutate(change_or_not = ifelse(profession != profession_past | empstat != empstat_past,1, 0)) #index the change into 1 and not change into 0    
+vec5 = vec5 %>% group_by(idmen,year) %>%  
+  mutate(change_or_not = ifelse(profession != profession_past | empstat != empstat_past,1, 0)) #index the change into 1 and not change into 0    
 vec5 = vec5 %>% group_by(idmen) %>%
-  mutate(total_change = sum(!is.na(change_or_not) & change_or_not == 1)) %>% filter(total_change >= 1) #get the total change and keep the data with total change equal or greater than 1
+  mutate(total_change = sum(!is.na(change_or_not) & change_or_not == 1)) %>% 
+  filter(total_change >= 1) #get the total change and keep the data with total change equal or greater than 1
 vec5 = vec5[!duplicated(vec5$idmen),] #remove duplicated idmen
 print(nrow(vec5)) 
 
@@ -220,7 +225,8 @@ C = sapply(x,myfunction)
 C = as.data.frame(C)
 vec3 = cbind(C[1:15,],C[2:16,])
 colnames(vec3)[2] = "indi_2005_2019"
-colnames(vec3)[1] = "indi_2004_2018"  #find out numbers of individual in each year.construct one column that includes data from year 2004 to 2018 and one column from year 2005 to 2019.
+colnames(vec3)[1] = "indi_2004_2018"  
+#find out numbers of individual in each year.construct one column that includes data from year 2004 to 2018 and one column from year 2005 to 2019.
 
 for (i in seq(2004,2019,1)){
   D = merge_set[merge_set$year == i,]
@@ -232,5 +238,6 @@ vec4 = c(19148,19391,20483,20034,20265,20904,21392,22472,21268,20530,
          20914,20855,19965,19199,18688)
 vec4 = as.data.frame(vec4)
 vec3 = cbind(vec3,vec4) #append it to the dataset we get before 
-vec3 = vec3 %>% mutate(exit = indi_2004_2018 - vec4) %>% mutate(attrition = (exit / indi_2004_2018)*100) #create one columns of individual exit and another columns of attrition ratio. 
+vec3 = vec3 %>% mutate(exit = indi_2004_2018 - vec4) %>% mutate(attrition = (exit / indi_2004_2018)*100) 
+#create one columns of individual exit and another columns of attrition ratio. 
 
