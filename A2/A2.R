@@ -365,25 +365,20 @@ pdf_log = X.3 %*% t(beta_log.1)
 marginal_log = mean(dnorm(pdf_log)) * t(beta_log.1)
 print(marginal_log)
 
-  #5-2
+  #5-2 
+#trying to figure out how to do this part.
 #==========================================
 # probit 
 #==========================================
-sd_prob = function(likeli_3,data){
-  n = 100
-  out_3 = mat.or.vec(n,13)
-  for (i in 1:n){
-    start    = runif(12,-10,10)
-    result  = optim(start,fn=likeli_3,method="BFGS",control=list(trace=6,maxit=1000),age=age,
-                    y.6=y.6,y.7=y.7,y.8=y.8,y.9=y.9,y.10=y.10,y.11=y.11,y.12=y.12,y.13=y.13,
-                    y.14=y.14,y.15=y.15,y=y)
-    out_3[i,] = c(result$par,result$value)
-  }}
-  
-  for (i in 1:R){
-  sampl.3 = sample(1:num_indi.3,num_indi.3,rep=TRUE) #sampling data
-  dat_sampl.3 = data_prob.2[sampl.3,] #randomly select 
-  beta_3     = likeli_3()
+R = 49 
+num_indi.3 = nrow(data_prob.2) 
+num_vari.3 = 13
+out.3 = mat.or.vec(R,num_vari.3) 
+set.seed(123)
+for (i in 1:R){
+  sampl.3 = sample(1:num_indi.3,num_indi.3,rep=TRUE)
+  dat_sampl.4 = data_prob.2[sampl.3,] 
+  beta_3     = likeli_3(dat_sampl.3)
   out.3[i] = beta_3
 }
 mean_prob = mean(out.3)
@@ -396,14 +391,14 @@ print(sd_prob)
 R = 49 
 num_indi.3 = nrow(data_prob.2) 
 num_vari.3 = 13
-out.3 = mat.or.vec(R,num_vari.3) 
+out.4 = mat.or.vec(R,num_vari.3) 
 set.seed(123)
 for (i in 1:R){
-  sampl.3 = sample(1:num_indi.3,num_indi.3,rep=TRUE) #sampling data
-  dat_sampl.3 = data_prob.2[sampl.3,] #randomly select 
-  beta_3     = likeli_4(dat_sampl.3)
-  out.3[i] = beta_3
+  sampl.4 = sample(1:num_indi.3,num_indi.3,rep=TRUE)
+  dat_sampl.4 = data_prob.2[sampl.3,] 
+  beta_4     = likeli_4(dat_sampl.3)
+  out.4[i] = beta_4
 }
-mean_prob = mean(out.3)
-sd_prob   = sd(out.3)
+mean_prob = mean(out.4)
+sd_prob   = sd(out.4)
 print(sd_prob)
